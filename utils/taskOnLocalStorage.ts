@@ -30,8 +30,16 @@ async function deleteTaskFromLocalStorage(taskId: Task["id"]) {
   }
 }
 
+async function clearLocalStorage() {
+  try {
+    await AsyncStorage.clear();
+  } catch (error) {
+    console.error("Error clear from local storage:", error);
+  }
+}
 export {
   deleteTaskFromLocalStorage,
   getTasksFromLocalStorage,
   saveTasksToLocalStorage,
+  clearLocalStorage,
 };

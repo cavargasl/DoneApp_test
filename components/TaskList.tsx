@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList } from "react-native";
+import { FlatList, View } from "react-native";
 import { Task as TaskType } from "../types";
 import Task from "./Task";
 
@@ -33,6 +33,8 @@ export default function TaskList({
           onDeleteTask={onDeleteTask}
         />
       )}
+      removeClippedSubviews={false}
+      ListFooterComponent={<View style={{ height: 20 }}></View>}
     />
   );
 }

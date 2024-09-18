@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Task } from "../types";
 import {
+  clearLocalStorage,
   deleteTaskFromLocalStorage,
   getTasksFromLocalStorage,
   saveTasksToLocalStorage,
@@ -57,5 +58,10 @@ export default function useTasks() {
     });
   }
 
-  return { tasks, addTask, deleteTask, toggleTask, editTask };
+  function clearData() {
+    clearLocalStorage();
+    setTasks([]);
+  }
+
+  return { tasks, addTask, deleteTask, toggleTask, editTask, clearData };
 }

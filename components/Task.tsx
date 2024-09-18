@@ -1,10 +1,10 @@
 import Checkbox from "expo-checkbox";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import { Task as TaskType } from "../types";
-import Badge from "./Badge";
 import { Swipeable } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/Feather";
+import { Task as TaskType } from "../types";
+import Badge from "./Badge";
 
 type TaskProps = {
   task: TaskType;
@@ -27,10 +27,8 @@ export default function Task({
 }: TaskProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedText, setEditedText] = useState(task.text);
-
   const handleEdit = () => {
     setIsEditing(true);
-    setEditedText(task.text);
   };
 
   const handleSave = () => {
@@ -43,7 +41,7 @@ export default function Task({
     setEditedText(task.text);
   };
 
-  const lefgSwipe = () => {
+  const leftSwipe = () => {
     return (
       <Pressable
         style={[styles.task, styles.deleteButton]}
@@ -54,7 +52,7 @@ export default function Task({
     );
   };
   return (
-    <Swipeable renderLeftActions={lefgSwipe}>
+    <Swipeable renderLeftActions={leftSwipe}>
       <View style={styles.task}>
         <Checkbox
           value={task.completed}
@@ -70,7 +68,7 @@ export default function Task({
               onBlur={handleCancel}
               onSubmitEditing={handleSave}
               style={styles.textInput}
-              autoFocus={isEditing}
+              autoFocus
             />
           ) : (
             <Text style={styles.taskText} onPress={handleEdit}>

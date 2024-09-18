@@ -1,3 +1,4 @@
+import { useRef, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -5,19 +6,20 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/Entypo";
 import IconAwesome from "react-native-vector-icons/FontAwesome6";
+import Badge from "./components/Badge";
+import ListTypes from "./components/ListTypes";
 import TaskList from "./components/TaskList";
 import useTasks from "./hooks/useTask";
-import { useRef, useState } from "react";
-import Badge from "./components/Badge";
 import { TypeTask } from "./types";
-import ListTypes from "./components/ListTypes";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { generateRandomId } from "./utils";
 
 export default function App() {
-  const { tasks, toggleTask, addTask, editTask, deleteTask } = useTasks();
+  const { tasks, toggleTask, addTask, editTask, deleteTask, clearData } =
+    useTasks();
   const inputRef = useRef<TextInput>(null);
   const [openNewTask, setOpenNewTask] = useState(false);
   const [typeSelected, setTypeSelected] = useState<TypeTask>("No list");
@@ -26,15 +28,28 @@ export default function App() {
     setTypeSelected(type);
   }
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#f6f6f6" }}>
       <SafeAreaView style={styles.container}>
         <Text style={styles.title}>DoneApp</Text>
-        <TaskList
-          tasks={tasks}
-          onToggle={toggleTask}
-          onEditTask={editTask}
-          onDeleteTask={deleteTask}
-        />
+        <View style={[{ flex: 1 }, openNewTask && { opacity: 0.3 }]}>
+          {tasks.length > 0 ? (
+            <TaskList
+              tasks={tasks}
+              onToggle={toggleTask}
+              onEditTask={editTask}
+              onDeleteTask={deleteTask}
+            />
+          ) : (
+            <View>
+              <Text style={[styles.title, { fontSize: 22, color: "#d4d4d4" }]}>
+                Empty List
+              </Text>
+              <Text style={[styles.title, { fontSize: 16, color: "#d4d4d4" }]}>
+                create a new task
+              </Text>
+            </View>
+          )}
+        </View>
         <View
           style={[
             styles.inputContainer,
@@ -46,7 +61,7 @@ export default function App() {
             style={[styles.input, openNewTask && styles.inputFocused]}
             placeholder="Write a new task"
             maxLength={40}
-            onPress={() => setOpenNewTask(true)}
+            onFocus={() => setOpenNewTask(true)}
             onBlur={() => {
               setOpenNewTask(false);
               setOpenedListType(false);
@@ -56,7 +71,7 @@ export default function App() {
               const newTask = event.nativeEvent.text;
               if (newTask.trim().length > 0) {
                 addTask({
-                  id: tasks.length + 1,
+                  id: generateRandomId(),
                   completed: false,
                   text: newTask,
                   type: typeSelected,
@@ -66,7 +81,7 @@ export default function App() {
             }}
           />
           {!openNewTask ? (
-            <TouchableOpacity style={styles.listButton}>
+            <TouchableOpacity style={styles.listButton} onPress={clearData}>
               <Icon name="list" size={24} color="#000" />
             </TouchableOpacity>
           ) : (
@@ -84,8 +99,8 @@ export default function App() {
             </TouchableOpacity>
           )}
         </View>
-        {openedListType && <ListTypes onChangeType={onChangeType} />}
       </SafeAreaView>
+      {openedListType && <ListTypes onChangeType={onChangeType} />}
     </GestureHandlerRootView>
   );
 }
@@ -95,6 +110,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f6f6f6",
     padding: 20,
+    paddingBottom: 10,
   },
   title: {
     fontSize: 32,
@@ -109,13 +125,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "80%",
     gap: 5,
+    height: "auto",
+    paddingTop: 10,
   },
   inputContainerFocus: {
     width: "100%",
     borderRadius: 10,
     backgroundColor: "#fff",
-    height: "auto",
     paddingHorizontal: 12,
+    alignItems: "center",
+    paddingVertical: 12,
   },
   input: {
     flex: 1,
@@ -130,7 +149,13 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 1,
   },
-  inputFocused: { shadowOpacity: 0, elevation: 0, paddingHorizontal: 0 },
+  inputFocused: {
+    shadowOpacity: 0,
+    elevation: 0,
+    paddingHorizontal: 0,
+    borderRadius: 0,
+    padding: 0,
+  },
   listButton: {
     backgroundColor: "#fff",
     padding: 12,
@@ -150,7 +175,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ebebeb",
     padding: 8,
     borderRadius: 6,
-    width: 110,
+    width: 120,
     justifyContent: "center",
   },
 });
