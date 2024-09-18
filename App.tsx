@@ -14,9 +14,10 @@ import { useRef, useState } from "react";
 import Badge from "./components/Badge";
 import { TypeTask } from "./types";
 import ListTypes from "./components/ListTypes";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function App() {
-  const { tasks, toggleTask, addTask, editTask } = useTasks();
+  const { tasks, toggleTask, addTask, editTask, deleteTask } = useTasks();
   const inputRef = useRef<TextInput>(null);
   const [openNewTask, setOpenNewTask] = useState(false);
   const [typeSelected, setTypeSelected] = useState<TypeTask>("No list");
@@ -25,60 +26,67 @@ export default function App() {
     setTypeSelected(type);
   }
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>DoneApp</Text>
-      <TaskList tasks={tasks} onToggle={toggleTask} onEditTask={editTask} />
-      <View
-        style={[
-          styles.inputContainer,
-          openNewTask && styles.inputContainerFocus,
-        ]}
-      >
-        <TextInput
-          ref={inputRef}
-          style={[styles.input, openNewTask && styles.inputFocused]}
-          placeholder="Write a new task"
-          maxLength={40}
-          onPress={() => setOpenNewTask(true)}
-          onBlur={() => {
-            setOpenNewTask(false);
-            setOpenedListType(false);
-            setTypeSelected("No list");
-          }}
-          onSubmitEditing={(event) => {
-            const newTask = event.nativeEvent.text;
-            if (newTask.trim().length > 0) {
-              addTask({
-                id: tasks.length + 1,
-                completed: false,
-                text: newTask,
-                type: typeSelected,
-              });
-              inputRef.current?.clear();
-            }
-          }}
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.title}>DoneApp</Text>
+        <TaskList
+          tasks={tasks}
+          onToggle={toggleTask}
+          onEditTask={editTask}
+          onDeleteTask={deleteTask}
         />
-        {!openNewTask ? (
-          <TouchableOpacity style={styles.listButton}>
-            <Icon name="list" size={24} color="#000" />
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity
-            style={styles.buttonType}
-            onPress={() => setOpenedListType((e) => !e)}
-          >
-            <Badge type={typeSelected} />
-            <Text style={{ flex: 1 }}>{typeSelected}</Text>
-            <IconAwesome
-              name={openedListType ? "arrow-down" : "arrow-up"}
-              size={12}
-              color="#2b2b2b"
-            />
-          </TouchableOpacity>
-        )}
-      </View>
-      {openedListType && <ListTypes onChangeType={onChangeType} />}
-    </SafeAreaView>
+        <View
+          style={[
+            styles.inputContainer,
+            openNewTask && styles.inputContainerFocus,
+          ]}
+        >
+          <TextInput
+            ref={inputRef}
+            style={[styles.input, openNewTask && styles.inputFocused]}
+            placeholder="Write a new task"
+            maxLength={40}
+            onPress={() => setOpenNewTask(true)}
+            onBlur={() => {
+              setOpenNewTask(false);
+              setOpenedListType(false);
+              setTypeSelected("No list");
+            }}
+            onSubmitEditing={(event) => {
+              const newTask = event.nativeEvent.text;
+              if (newTask.trim().length > 0) {
+                addTask({
+                  id: tasks.length + 1,
+                  completed: false,
+                  text: newTask,
+                  type: typeSelected,
+                });
+                inputRef.current?.clear();
+              }
+            }}
+          />
+          {!openNewTask ? (
+            <TouchableOpacity style={styles.listButton}>
+              <Icon name="list" size={24} color="#000" />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={styles.buttonType}
+              onPress={() => setOpenedListType((e) => !e)}
+            >
+              <Badge type={typeSelected} />
+              <Text style={{ flex: 1 }}>{typeSelected}</Text>
+              <IconAwesome
+                name={openedListType ? "arrow-down" : "arrow-up"}
+                size={12}
+                color="#2b2b2b"
+              />
+            </TouchableOpacity>
+          )}
+        </View>
+        {openedListType && <ListTypes onChangeType={onChangeType} />}
+      </SafeAreaView>
+    </GestureHandlerRootView>
   );
 }
 
@@ -100,6 +108,7 @@ const styles = StyleSheet.create({
     marginHorizontal: "auto",
     alignItems: "center",
     width: "80%",
+    gap: 5,
   },
   inputContainerFocus: {
     width: "100%",
@@ -138,7 +147,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    backgroundColor: "#e2e2e2",
+    backgroundColor: "#ebebeb",
     padding: 8,
     borderRadius: 6,
     width: 110,

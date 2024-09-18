@@ -45,8 +45,8 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
     marginTop: 10,
-    borderTopStartRadius: 20,
-    borderTopEndRadius: 20,
+    borderTopStartRadius: 40,
+    borderTopEndRadius: 40,
     padding: 12,
     paddingTop: 20,
     gap: 20,

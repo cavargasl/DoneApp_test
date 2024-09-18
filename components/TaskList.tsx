@@ -13,18 +13,25 @@ type TaskListProps = {
     taskId: TaskType["id"];
     newTask: TaskType;
   }) => void;
+  onDeleteTask: (taskId: TaskType["id"]) => void;
 };
 
 export default function TaskList({
   tasks,
   onToggle,
   onEditTask,
+  onDeleteTask,
 }: TaskListProps) {
   return (
     <FlatList
       data={tasks}
       renderItem={({ item }) => (
-        <Task task={item} onToggle={onToggle} onEditTask={onEditTask} />
+        <Task
+          task={item}
+          onToggle={onToggle}
+          onEditTask={onEditTask}
+          onDeleteTask={onDeleteTask}
+        />
       )}
     />
   );
