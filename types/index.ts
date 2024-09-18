@@ -5,4 +5,4 @@ export type Task = {
   type: TypeTask;
 };
 
-export type TypeTask = "Personal" | "Work" | "No list";
+export type TypeTask = "Personal" | "Work" | "Errands" | "No list";

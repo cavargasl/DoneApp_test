@@ -6,9 +6,9 @@ export const defaultTasks: Task[] = [
     id: 2,
     text: "Get feedback on website design",
     completed: true,
-    type: "Personal",
+    type: "Errands",
   },
-  { id: 3, text: "Buy milk", completed: false, type: "Personal" },
+  { id: 3, text: "Buy milk", completed: false, type: "Work" },
   {
     id: 4,
     text: "Call Katherine about the trip",
