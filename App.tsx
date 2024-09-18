@@ -8,15 +8,35 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/Entypo";
 import TaskList from "./components/TaskList";
-import { Task } from "./types";
+import useTasks from "./hooks/useTask";
+import { useRef } from "react";
 
 export default function App() {
+  const { tasks, toggleTask, addTask, editTask } = useTasks();
+  const inputRef = useRef<TextInput>(null);
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>DoneApp</Text>
-      <TaskList tasks={defaultTasks} />
+      <TaskList tasks={tasks} onToggle={toggleTask} onEditTask={editTask} />
       <View style={styles.inputContainer}>
-        <TextInput style={styles.input} placeholder="Write a new task" />
+        <TextInput
+          ref={inputRef}
+          style={styles.input}
+          placeholder="Write a new task"
+          maxLength={40}
+          onSubmitEditing={(event) => {
+            const newTask = event.nativeEvent.text;
+            if (newTask.trim().length > 0) {
+              addTask({
+                id: tasks.length + 1,
+                completed: false,
+                text: newTask,
+                type: "No list",
+              });
+              inputRef.current?.clear();
+            }
+          }}
+        />
         <TouchableOpacity style={styles.listButton}>
           <Icon name="list" size={24} color="#000" />
         </TouchableOpacity>
