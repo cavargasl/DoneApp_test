@@ -16,7 +16,7 @@ import TaskList from "./components/TaskList";
 import useTasks from "./hooks/useTask";
 import { TypeTask } from "./types";
 import { generateRandomId } from "./utils";
-
+import { StatusBar } from "expo-status-bar";
 export default function App() {
   const { tasks, toggleTask, addTask, editTask, deleteTask, clearData } =
     useTasks();
@@ -30,6 +30,7 @@ export default function App() {
   }
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#f6f6f6" }}>
+      <StatusBar style="dark" />
       <SafeAreaView style={styles.container}>
         <Text style={styles.title}>DoneApp</Text>
         <View style={[{ flex: 1 }, openNewTask && { opacity: 0.3 }]}>
