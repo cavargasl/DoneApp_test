@@ -1,3 +1,5 @@
+import { typeTask } from "../const";
+
 export type Task = {
   id: string;
   text: string;
@@ -5,4 +7,4 @@ export type Task = {
   type: TypeTask;
 };
 
-export type TypeTask = "Personal" | "Work" | "Errands" | "No list";
+export type TypeTask = (typeof typeTask)[number];

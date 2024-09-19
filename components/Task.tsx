@@ -1,9 +1,20 @@
 import Checkbox from "expo-checkbox";
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  FlatList,
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/Feather";
-import { Task as TaskType } from "../types";
+import { Task as TaskType, TypeTask } from "../types";
+import { getTypeTaskOptions } from "../utils";
 import Badge from "./Badge";
 
 type TaskProps = {
@@ -51,6 +62,16 @@ export default function Task({
       </Pressable>
     );
   };
+
+  const [modalVisible, setModalVisible] = useState(false);
+  function handleSelect(option: TypeTask) {
+    onEditTask({ taskId: task.id, newTask: { ...task, type: option } });
+    setModalVisible(false);
+  }
+  function handleOutsideClick() {
+    setModalVisible(false);
+  }
+
   return (
     <Swipeable renderLeftActions={leftSwipe}>
       <View style={styles.task}>
@@ -76,11 +97,73 @@ export default function Task({
             </Text>
           )}
         </View>
-        <Badge type={task.type} />
+        <Modal
+          transparent={true}
+          animationType="fade"
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <TouchableWithoutFeedback onPress={handleOutsideClick}>
+            <View style={stylesModal.modalContainer}>
+              <View style={stylesModal.modalContent}>
+                <FlatList
+                  data={getTypeTaskOptions()}
+                  keyExtractor={(item) => item}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      style={stylesModal.option}
+                      onPress={() => handleSelect(item)}
+                    >
+                      <Badge type={item} />
+                      <Text style={stylesModal.optionText}>{item}</Text>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
+        <Pressable
+          onPress={() => setModalVisible(true)}
+          style={{
+            height: 30,
+            width: 30,
+            marginRight: 5,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Badge type={task.type} />
+        </Pressable>
       </View>
     </Swipeable>
   );
 }
+
+const stylesModal = StyleSheet.create({
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
+  },
+  modalContent: {
+    width: "80%",
+    backgroundColor: "white",
+    borderRadius: 16,
+    overflow: "hidden",
+    padding: 12,
+  },
+  option: {
+    padding: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  optionText: {
+    fontSize: 16,
+  },
+});
 
 const styles = StyleSheet.create({
   task: {
@@ -90,6 +173,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 15,
     marginBottom: 10,
+    paddingRight: 0,
   },
   taskText: {
     fontSize: 16,
@@ -112,8 +196,9 @@ const styles = StyleSheet.create({
   deleteButton: {
     backgroundColor: "#dc3545",
     alignItems: "center",
-    width: 50,
+    width: 60,
     justifyContent: "center",
     marginRight: 10,
+    padding: 0,
   },
 });

@@ -16,3 +16,5 @@ export const defaultTasks: Task[] = [
     type: "Personal",
   },
 ];
+
+export const typeTask = ["Personal", "Work", "Errands", "No list"] as const;
