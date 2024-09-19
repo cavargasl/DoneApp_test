@@ -26,6 +26,7 @@ export default function App() {
   const [openedListType, setOpenedListType] = useState(false);
   function onChangeType(type: TypeTask) {
     setTypeSelected(type);
+    setOpenedListType(false);
   }
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#f6f6f6" }}>
@@ -130,11 +131,6 @@ const styles = StyleSheet.create({
   },
   inputContainerFocus: {
     width: "100%",
-    borderRadius: 10,
-    backgroundColor: "#fff",
-    paddingHorizontal: 12,
-    alignItems: "center",
-    paddingVertical: 12,
   },
   input: {
     flex: 1,
@@ -150,11 +146,13 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   inputFocused: {
+    width: "100%",
+    paddingRight: 125,
     shadowOpacity: 0,
     elevation: 0,
-    paddingHorizontal: 0,
-    borderRadius: 0,
-    padding: 0,
+    borderRadius: 10,
+    alignItems: "center",
+    position: "relative",
   },
   listButton: {
     backgroundColor: "#fff",
@@ -169,6 +167,9 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   buttonType: {
+    position: "absolute",
+    right: 12,
+    bottom: 6,
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
